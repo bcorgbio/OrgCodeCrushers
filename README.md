@@ -1,2 +1,1 @@
 # OrgCodeCrushers
-Team 10
