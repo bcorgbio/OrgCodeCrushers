@@ -8,6 +8,11 @@ setwd("~/Desktop/BIOL3140/OrgCodeCrushers/Project1/ModProj1- Jenna")
 #2 Variable containing data set
 dat <- read.csv("scales.csv")
 
+#3 Dimensions and class of data set
+dim(dat)
+mean(dat$N)
+sapply(dat,class)
+
 #3 Summary of how many scales were punctured in each species
 dat %>%
   group_by(species) %>%
