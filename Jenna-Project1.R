@@ -3,25 +3,13 @@ library(tidyverse)
 setwd("~/Desktop/BIOL3140/OrgCodeCrushers/Project1/ModProj1- Jenna")
 dat <- read.csv("scales.csv")
 dim(dat)
-head(dat)
-class(dat$N)
-class(dat$quadrant)
-class(dat$species)
-class(dat$specimen)
 mean(dat$N)
 sapply(dat,class)
 dat$species <- as.factor(dat$species)
 species <- levels(dat$species)
 species
-length(species)
 dat$species==species[1]
 dat$species[dat$species==species[1]]
-A.rup<-length(dat$species[dat$species==species[1]])
-L.gib<-length(dat$species[dat$species==species[2]])
-L.mac<-length(dat$species[dat$species==species[3]])
-M.sal<-length(dat$species[dat$species==species[4]])
-M.sax<-length(dat$species[dat$species==species[5]])
-P.fla<-length(dat$species[dat$species==species[6]])
 species.obs <- data.frame(sp=species,n=c(A.rup,L.gib,L.mac,M.sal,M.sax,P.fla))
 species.obs
 dat %>%
@@ -45,4 +33,3 @@ for(i in species){
   print(p)
 }
 dev.off()
-list.files(pattern=".pdf")
