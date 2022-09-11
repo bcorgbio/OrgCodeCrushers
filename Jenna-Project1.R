@@ -10,8 +10,6 @@ species <- levels(dat$species)
 species
 dat$species==species[1]
 dat$species[dat$species==species[1]]
-species.obs <- data.frame(sp=species,n=c(A.rup,L.gib,L.mac,M.sal,M.sax,P.fla))
-species.obs
 dat %>%
   group_by(species) %>%
   summarise(n = n())
