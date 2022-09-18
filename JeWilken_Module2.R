@@ -49,7 +49,8 @@ pseed.sum.max<- pseed.max %>%
   summarize(amp.sum.mean=mean(amp.sum)) 
 
 #3 Create a custom function that computes the standard error of the mean (SE). 
-  sd(x)/ sqrt(length(x))
+ SD <- function(x){
+ sd(x)/ sqrt(length(x))
 }
 
 pseed.sum.se <- pseed.max%>%
