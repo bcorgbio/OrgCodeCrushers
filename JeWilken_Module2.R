@@ -3,7 +3,6 @@
 library(tidyverse)
 library(ggplot2)
 library(features)
-setwd("~/Desktop/BIOL3140/OrgCodeCrushers/OrgCodeCrushers")
 
 pseed <- read_csv("pseed.fin.amps.csv")
 pseed.bl <- read_csv("pseed.lengths.csv")
@@ -49,8 +48,7 @@ pseed.sum.max<- pseed.max %>%
   group_by(fish, speed) %>%
   summarize(amp.sum.mean=mean(amp.sum)) 
 
-#3 Create a custom function that computes the standard error of the mean (SE). [see below] and add a column in your summary table pseed.sum.max for SE and call it amp.sum.se.
-SE <- function(x){
+#3 Create a custom function that computes the standard error of the mean (SE). 
   sd(x)/ sqrt(length(x))
 }
 
@@ -60,12 +58,12 @@ pseed.sum.se <- pseed.max%>%
 pseed.sum.max <- pseed.sum.max %>%
   left_join(pseed.sum.se, by = c("speed","fish"))
 
-#4 "The Good Stuff" Using ggplot, plot the mean amp.sum vs. specific swimming speed and add error bars that correspond to the SE of amp.sum. Be sure to color your points and error bars by specimen (fish).
+#4 "The Good Stuff" Using ggplot, plot the mean amp.sum vs. specific swimming speed and add error bars that correspond to the SE of amp.sum. 
 pd <- position_dodge(0.1)
 pseed.sum.max %>%
   ggplot(aes(x=speed,y=amp.sum.mean,col=fish))+geom_point()+geom_smooth(method="lm")+geom_errorbar(aes(ymin=amp.sum.mean-amp.sum.se, ymax=amp.sum.mean+amp.sum.se), width=0.5, colour="black", position=pd)+theme_classic()
 
-#5  Merge it with the your new pseed.sum.max tibble.
+#5 Merge with new pseed.sum.max tibble.
 pseed.met.rate <- read_csv("OrgCodeCrushers/pseed.met.rate.csv")
 pseed.max <- pseed.max%>%
   merge(pseed.met.rate,by=c("fish","date","m.s","cm.s","bl.s"))
