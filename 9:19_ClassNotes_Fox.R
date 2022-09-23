@@ -11,3 +11,13 @@ d <- tibble(x=c(x.A,x.B), y=c(y.A,y.B), species = c(rep("A",50),rep("B",50)))
 lm(y~x*d)
 #Difference in intercept --> x+d
 #Difference in slope --> x*d
+
+##
+
+#Comparitive method --> how does one thing vary with another?
+#corBrownian
+#corMartins
+
+#gls()
+#AIC = Lowest is better
+#AIC(Fit1, Fit2)
