@@ -17,13 +17,13 @@ pseed.wide <- pseed %>%
 ##Joining data
 
 find.peaks <- function(x,y,mult=100)
-{ 
-  f <- fget(features(x = x,y=y*mult))[2:3]%>% 
-    as_tibble()%>% 
-    filter(curvature<0)%>% 
-    mutate(peaks=round(crit.pts,0))
-  return(f$peaks)
-}
+  { 
+      f <- fget(features(x = x,y=y*mult))[2:3]%>% 
+      as_tibble()%>% 
+      filter(curvature<0)%>% 
+      mutate(peaks=round(crit.pts,0))
+      return(f$peaks)
+  }
 
 pseed.max <- pseed.wide%>%
   group_by(fish,speed)%>%
@@ -36,9 +36,9 @@ pseed.sum.max<- pseed.max %>%
 
 
 SE <- function(x)
-{
-  sd(x)/ sqrt(length(x))
-}
+  {
+     sd(x)/ sqrt(length(x))
+  }
 
 pseed.sum.se <- pseed.max%>% #determine SE of mean of amp.sum using the pseed.max data set
   group_by(fish,speed)%>%
