@@ -1,4 +1,4 @@
-## Module 3 Project - Brendan F, Jerry H, Chris P, Jenna W
+## Module 3 Project - Brendan F, Tingwei H, Chris P, Jenna W
 
 ## Importing Libraries
 
