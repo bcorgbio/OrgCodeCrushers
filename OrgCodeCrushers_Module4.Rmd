@@ -76,10 +76,26 @@ anole.phylow.aicw %>%
   kable(caption = 'AICw to compare model fit')
 ```
 
+#Table of AIC values using kable
+
+n.spec <- anole.phylo.aic%>%
+  group_by(rownames(anole.phylo.aic))%>%
+  summarise(AIC = AICc)
+
+n.spec%>%
+  kable(caption = "AIC Values for Various PGLS Models of the Hindlimb-SVL Relationship with Perch Height and Diameter)
+```
+
 ```{r, "add residuals"}
 #add phylo-corrected residuals
 anole.log <- anole.log%>%
   mutate(phylo.res=residuals(pgls.BM2))
+```
+
+```{r, fig.cap="Regression Plot of Log-transformed Htotal vs. SVL by Ecomorphs", echo=FALSE}
+anole.log%>%
+
+ggplot(aes(HTotal,SVL,col=Ecomorph2))+geom_point()+geom_smooth(method="lm")
 ```
 
 ```{r,"plot residuals", fig.cap="Boxplot of phylogenetically corrected hindlimb residuals versus anole ecomorph"}
@@ -93,9 +109,12 @@ print(p.eco.phylo)
 
 
 #   Discussion
+According to the results of the AICc and AICw, perch height and diameter are both significant predictors of the phylogenetically corrected hindlimb residuals and hindlimb length in a phylogenetic context. To better understand the relationship between hindlimb length and SVL, perch height and diameter should be plotted. 
 
 #   Author Contribution
 Tingwei Hu: Introduction, altered AIC chunk, bibliography
-Chris Pang: Methods, 
+Chris Pang: Methods, 6, References, Discussion
 
 #   References
+Hagey, Travis J, Scott Harte, Mathew Vickers, Luke J Harmon, and Lim Schwarzkopf. 2017.
+"There's More Than One Way to Climb a Tree: Limb Length and Microhabitat Use in Lizards with Toe Pads."PloS One 12 (9): e0184641
