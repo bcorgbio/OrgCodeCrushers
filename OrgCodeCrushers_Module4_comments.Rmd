@@ -1,0 +1,103 @@
+---
+title: "Module 4"
+author: "Brendan Fox, Tingwei Hu, Christopher Pang, Jenna Wilken"
+date: "2022-09-30"
+output: html_document
+bibliography: OCCProj4.bib
+nocite: '@*'
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,include=FALSE}
+library(tidyverse) #always
+library(ape) #for evo analysis
+library(nlme) #ditto
+library(MuMIn) #for AIC
+library(geiger) #for eco analysis
+library(knitr) #for knitting options
+```
+#   Introduction
+Convergent evolution broadly refers to the emergence of functionally similar traits in phylogenetically distant species as a response to similar challenges that present selective pressure. @hagey2017there pointed out that the study of ecomorphogy can help tease out the extent to which the evolution of similar traits ocuurs. In this study, we hope to investigate the relationship between hind limb length and body length of several lizard species from the genus *Anolis* across their ecomorphological context.
+<center>
+![*Anolis carolinensis*](https://img.texasmonthly.com/2015/12/3818630739_60c3697540_o.jpg?auto=compress&crop=faces&fit=fit&fm=jpg&h=0&ixlib=php-1.2.1&q=45&w=1250)
+</center>
+
+#   Methods
+
+The information from @hagey2017 was log transformed and as a result, there were two linear models constructured. They were constructured because they would be used to assess the effect of perch height and diameteron hindlimb length. In order to determine how perch diameter and height affect the hindlimb-SVL relationship, the residuals from these data sets were computed and displayed against the discrete parameters. Using all possible combinations of the two covariates, the anole phylogenetic tree from @poe2017phylogenetic was used to construct phylogenetic squares models of the hindlimb-SVL relationships. The possible combinations altered
+  # all combinations use the PGLS model
+  # hindlimb-SVL relationship + perch diameter
+  # hindlimb-SVL relationship + perch height
+  # hindlimb-SVL relationship + perch diameter + perch height
+To test whether one or both of the coavriates is a good predictor of hindlimb length in a phylogenetic context, the fit of each model was evaluated using AICc and AICw. To see the impact of perch height, perch diameter, and ecomorph on the residuals of the best-fitting PGLS model's hindlimbs, a facet grid was created. 
+
+#   Results
+```{r, "load the data"}
+anole <- read_csv("anole.dat.csv")
+anole.eco <- read_csv("anole.eco.csv")
+anole.tree <- read.tree("anole.tre")
+```
+
+```{r, "join, filter, mutate to log"}
+anole2 <- anole%>%
+left_join(anole.eco)%>%
+  filter(!Ecomorph%in%c("U","CH"))%>%
+  na.omit()
+
+anole.log <- anole2%>%
+  mutate_at(c("SVL", "HTotal","PH","ArbPD"),log)
+```
+
+```{r, "PGLS models"}
+### phylogenetic GLS models
+
+#PGLS under BM, no ecomorph
+pgls.BM1 <- gls(HTotal ~SVL, correlation = corBrownian(1,phy = anole.tree,form=~Species),data = anole.log, method = "ML")
+
+#PGLS under BM, w ecomorph
+pgls.BM2 <- gls(HTotal ~SVL * Ecomorph2, correlation = corBrownian(1,phy = anole.tree,form=~Species),data = anole.log, method = "ML")
+
+#PGLS under OU, no ecomorph
+pgls.OU1 <- gls(HTotal ~SVL, correlation = corMartins(0,phy = anole.tree,form=~Species),data = anole.log, method = "ML")
+
+#PGLS under OU, w, ecomorph
+pgls.OU2 <- gls(HTotal ~SVL * Ecomorph2, correlation = corMartins(0,phy = anole.tree,form=~Species),data = anole.log, method = "ML")
+```
+
+```{r, "AIC"}
+#AIC operations
+anole.phylo.aic <- AICc(pgls.BM1,pgls.BM2,pgls.OU1,pgls.OU2)
+anole.phylo.aic %>%  
+  kable(caption = 'AICc to compare model fit')
+anole.phylow.aicw <- aicw(anole.phylo.aic$AICc)
+anole.phylow.aicw %>% 
+  kable(caption = 'AICw to compare model fit')
+```
+
+```{r, "add residuals"}
+#add phylo-corrected residuals
+anole.log <- anole.log%>%
+  mutate(phylo.res=residuals(pgls.BM2))
+```
+
+```{r,"plot residuals", fig.cap="Boxplot of phylogenetically corrected hindlimb residuals versus anole ecomorph"}
+#plot residuals
+p.eco.phylo <- anole.log%>%
+ggplot(aes(x=Ecomorph2,y=phylo.res)) +geom_boxplot() +stat_summary(fun=mean, geom="point", size=3)
+
+print(p.eco.phylo)
+
+```
+
+#   Discussion
+According to the results of the AICc and AICw, perch height and diameter are both significant predictors of the phylogenetically corrected hindlimb residuals and hindlimb length in a phylogenetic context. To better understand the relationship between hindlimb length and SVL, perch height and diameter was plotted. After plotting perch height, diameter and hindlimb_SVL, the PGLS models confirmed that specific traits of hindlimb_SVL had evolved randomly. Moreover, the relationship in the residual plot has shown that there might be significance in hindlimb_SVLby phylogeny. 
+#   Author Contribution
+Tingwei Hu: Introduction, altered AIC chunk, bibliography
+Chris Pang: Methods, 6, References, Discussion 
+Jenna Wilken: AICc and AICw chunk; Module 3, Discussion
+
+#CPK Comments
+
+Just remember to add the references section (title with `#` only). Otherwise. Look excellent!! Congrats. 15/15
